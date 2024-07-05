@@ -1,0 +1,86 @@
+mysql> describe users;
++----------+--------------+------+-----+---------+----------------+
+| Field    | Type         | Null | Key | Default | Extra          |
++----------+--------------+------+-----+---------+----------------+
+| id       | bigint(20)   | NO   | PRI | NULL    | auto_increment |
+| email    | varchar(50)  | YES  | UNI | NULL    |                |
+| password | varchar(120) | YES  |     | NULL    |                |
+| username | varchar(20)  | YES  | UNI | NULL    |                |
++----------+--------------+------+-----+---------+----------------+
+4 rows in set (0.00 sec)
+
+mysql> describe roles;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int(11)     | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(20) | YES  |     | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+2 rows in set (0.00 sec)
+
+mysql> describe user_roles;
++---------+------------+------+-----+---------+-------+
+| Field   | Type       | Null | Key | Default | Extra |
++---------+------------+------+-----+---------+-------+
+| user_id | bigint(20) | NO   | PRI | NULL    |       |
+| role_id | int(11)    | NO   | PRI | NULL    |       |
++---------+------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+We also need to add some rows into roles table before assigning any role to User.
+Run following SQL insert statements:
+
+INSERT INTO roles(name) VALUES('ROLE_USER');
+INSERT INTO roles(name) VALUES('ROLE_MODERATOR');
+INSERT INTO roles(name) VALUES('ROLE_ADMIN');
+Then check the tables:
+
+mysql> select * from roles;
++----+----------------+
+| id | name           |
++----+----------------+
+|  1 | ROLE_USER      |
+|  2 | ROLE_MODERATOR |
+|  3 | ROLE_ADMIN     |
++----+----------------+
+3 rows in set (0.00 sec)
+Register some users with /signup  API:
+
+admin with ROLE_ADMIN
+mod with ROLE_MODERATOR and ROLE_USER
+zkoder with ROLE_USER
+
+
+
+
+mysql> select * from users;
++----+--------------------+--------------------------------------------------------------+----------+
+| id | email              | password                                                     | username |
++----+--------------------+--------------------------------------------------------------+----------+
+|  1 | admin@bezkoder.com | $2a$10$XEGS8J0hIUII6kdPgT9ykuRTwPCdDiDzt24eOcodgi16kTMQPfqna | admin    |
+|  2 | mod@bezkoder.com   | $2a$10$jfLldGLZ0jTVRIt.mSqkxen.tHA3ynsr4.FWTZVM1rOp3STVLi8Ke | mod      |
+|  3 | user@bezkoder.com  | $2a$10$IcQFF9tvJt/idNGejhbWMuh9voYXB15qTc7YXQNpLyuEyNE.oSxge | zkoder   |
++----+--------------------+--------------------------------------------------------------+----------+
+3 rows in set (0.00 sec)
+
+
+mysql> select * from roles;
++----+----------------+
+| id | name           |
++----+----------------+
+|  1 | ROLE_USER      |
+|  2 | ROLE_MODERATOR |
+|  3 | ROLE_ADMIN     |
++----+----------------+
+3 rows in set (0.00 sec)
+
+
+mysql> select * from user_roles;
++---------+---------+
+| user_id | role_id |
++---------+---------+
+|       2 |       1 |
+|       3 |       1 |
+|       2 |       2 |
+|       1 |       3 |
++---------+---------+
+4 rows in set (0.00 sec)
